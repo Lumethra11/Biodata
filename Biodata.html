@@ -1,0 +1,1823 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generator Biodata Diri</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-color: #1e293b;
+            --secondary-color: #3b82f6;
+            --accent-color: #10b981;
+            --dark-color: #0f172a;
+            --light-color: #f8fafc;
+            --gray-color: #64748b;
+            --border-color: #e2e8f0;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            color: var(--dark-color);
+            line-height: 1.5;
+            min-height: 100vh;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, var(--dark-color) 0%, var(--primary-color) 100%);
+            color: white;
+            padding: 25px 0;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 250px;
+            height: 250px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 50%;
+            transform: translate(80px, -120px);
+        }
+        
+        .sidebar {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+            padding: 25px;
+            height: fit-content;
+            position: sticky;
+            top: 25px;
+            max-height: calc(100vh - 50px);
+            overflow-y: auto;
+            border: 1px solid var(--border-color);
+        }
+        
+        .preview-container {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+            padding: 25px;
+            min-height: 842px; /* A4 height */
+            position: relative;
+            border: 1px solid var(--border-color);
+        }
+        
+        .form-section {
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .form-section:last-child {
+            border-bottom: none;
+        }
+        
+        .form-section h5 {
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--secondary-color);
+            display: flex;
+            align-items: center;
+            font-size: 1rem;
+            letter-spacing: -0.3px;
+        }
+        
+        .form-label {
+            font-weight: 600;
+            font-size: 0.8rem;
+            color: var(--gray-color);
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        
+        .form-control, .form-select {
+            border-radius: 8px;
+            border: 2px solid var(--border-color);
+            padding: 10px 14px;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            background-color: var(--light-color);
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+            background-color: white;
+        }
+        
+        .template-selector {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .template-option {
+            width: 100px;
+            height: 130px;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            background: white;
+        }
+        
+        .template-option:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.12);
+        }
+        
+        .template-option.active {
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+        }
+        
+        .template-option img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .template-name {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+            color: white;
+            padding: 8px 6px 6px;
+            font-size: 0.75rem;
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        .btn-generate {
+            background: linear-gradient(135deg, var(--secondary-color), #2563eb);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 15px;
+            font-size: 0.95rem;
+            letter-spacing: 0.3px;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
+        }
+        
+        .btn-generate:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.35);
+            color: white;
+        }
+        
+        .btn-download {
+            margin-left: 10px;
+            border-radius: 10px;
+            padding: 8px 16px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+        }
+        
+        .biodata-preview {
+            width: 100%;
+            height: 100%;
+            min-height: 792px; /* A4 height minus padding */
+            overflow: hidden;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.05);
+        }
+        
+        /* Template Compact - One Page Design */
+        .template-compact {
+            font-family: 'Roboto', sans-serif;
+            color: #000;
+            background: white;
+            padding: 30px;
+            position: relative;
+            line-height: 1.4;
+        }
+        
+        .template-compact .header-title {
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--secondary-color);
+        }
+        
+        .template-compact .header-title h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+            color: var(--primary-color);
+        }
+        
+        .template-compact .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .template-compact .info-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 3px solid var(--secondary-color);
+        }
+        
+        .template-compact .info-label {
+            font-weight: 600;
+            font-size: 0.8rem;
+            color: var(--gray-color);
+            margin-right: 10px;
+            min-width: 100px;
+        }
+        
+        .template-compact .info-value {
+            font-size: 0.85rem;
+            color: var(--dark-color);
+            font-weight: 500;
+        }
+        
+        .template-compact .section-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin: 20px 0 12px 0;
+            padding-bottom: 6px;
+            border-bottom: 2px solid var(--secondary-color);
+        }
+        
+        .template-compact .education-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        
+        .template-compact .education-item {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 8px;
+            border-left: 3px solid var(--accent-color);
+        }
+        
+        .template-compact .education-title {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--dark-color);
+            margin-bottom: 4px;
+        }
+        
+        .template-compact .education-details {
+            font-size: 0.8rem;
+            color: var(--gray-color);
+            line-height: 1.3;
+        }
+        
+        .template-compact .education-details strong {
+            color: var(--dark-color);
+            font-weight: 600;
+        }
+        
+        /* Template Clean - Minimal One Page */
+        .template-clean {
+            font-family: 'Open Sans', sans-serif;
+            color: #000;
+            background: white;
+            padding: 35px;
+            position: relative;
+            line-height: 1.4;
+        }
+        
+        .template-clean .header-title {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        
+        .template-clean .header-title h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 8px;
+        }
+        
+        .template-clean .header-title::after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 3px;
+            background: var(--secondary-color);
+            margin: 10px auto 0;
+        }
+        
+        .template-clean .info-section {
+            margin-bottom: 20px;
+        }
+        
+        .template-clean .info-row {
+            display: flex;
+            padding: 8px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .template-clean .info-row:last-child {
+            border-bottom: none;
+        }
+        
+        .template-clean .info-label {
+            width: 140px;
+            font-weight: 600;
+            color: var(--gray-color);
+            font-size: 0.85rem;
+        }
+        
+        .template-clean .info-value {
+            flex: 1;
+            font-size: 0.9rem;
+            color: var(--dark-color);
+        }
+        
+        .template-clean .section-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin: 25px 0 15px 0;
+            text-align: center;
+            position: relative;
+        }
+        
+        .template-clean .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 2px;
+            background: var(--secondary-color);
+        }
+        
+        .template-clean .education-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        
+        .template-clean .education-item {
+            background: #fafbfc;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+        
+        .template-clean .education-name {
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--primary-color);
+            margin-bottom: 6px;
+        }
+        
+        .template-clean .education-info {
+            font-size: 0.8rem;
+            color: var(--gray-color);
+            line-height: 1.4;
+        }
+        
+        .template-clean .education-info strong {
+            color: var(--dark-color);
+            font-weight: 600;
+        }
+        
+        /* Template Modern - Compact Professional */
+        .template-modern {
+            font-family: 'Inter', sans-serif;
+            color: #000;
+            background: white;
+            padding: 25px;
+            position: relative;
+            line-height: 1.4;
+        }
+        
+        .template-modern::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(to bottom, var(--secondary-color), var(--accent-color));
+        }
+        
+        .template-modern .header-title {
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .template-modern .header-title h1 {
+            font-size: 1.7rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+        
+        .template-modern .info-cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .template-modern .info-card {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+        
+        .template-modern .card-label {
+            font-size: 0.75rem;
+            color: var(--gray-color);
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+        
+        .template-modern .card-value {
+            font-size: 0.85rem;
+            color: var(--dark-color);
+            font-weight: 500;
+        }
+        
+        .template-modern .section-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin: 20px 0 12px 0;
+            padding-left: 10px;
+            border-left: 3px solid var(--secondary-color);
+        }
+        
+        .template-modern .education-cards {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        
+        .template-modern .education-card {
+            background: linear-gradient(135deg, #f8f9fa, white);
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        .template-modern .education-level {
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: var(--secondary-color);
+            margin-bottom: 4px;
+        }
+        
+        .template-modern .education-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--dark-color);
+            margin-bottom: 4px;
+        }
+        
+        .template-modern .education-details {
+            font-size: 0.75rem;
+            color: var(--gray-color);
+            line-height: 1.3;
+        }
+        
+        /* Template Elegant - Compact Premium */
+        .template-elegant {
+            font-family: 'Roboto', sans-serif;
+            color: #000;
+            background: white;
+            padding: 30px;
+            position: relative;
+            line-height: 1.4;
+        }
+        
+        .template-elegant::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(to right, var(--secondary-color), var(--accent-color));
+        }
+        
+        .template-elegant .header-title {
+            text-align: center;
+            margin-bottom: 22px;
+        }
+        
+        .template-elegant .header-title h1 {
+            font-size: 1.9rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+        
+        .template-elegant .header-subtitle {
+            font-size: 0.9rem;
+            color: var(--gray-color);
+            font-style: italic;
+        }
+        
+        .template-elegant .info-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 22px;
+        }
+        
+        .template-elegant .info-table td {
+            padding: 8px 12px;
+            border: 1px solid var(--border-color);
+            font-size: 0.85rem;
+        }
+        
+        .template-elegant .info-table td:first-child {
+            width: 25%;
+            font-weight: 600;
+            background: #f8f9fa;
+            color: var(--primary-color);
+        }
+        
+        .template-elegant .section-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin: 22px 0 15px 0;
+            text-align: center;
+            position: relative;
+            padding-bottom: 8px;
+        }
+        
+        .template-elegant .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 2px;
+            background: var(--secondary-color);
+        }
+        
+        .template-elegant .education-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        
+        .template-elegant .education-box {
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .template-elegant .education-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            padding-bottom: 6px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .template-elegant .education-level {
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: var(--secondary-color);
+        }
+        
+        .template-elegant .education-year {
+            font-size: 0.8rem;
+            color: var(--gray-color);
+            font-weight: 600;
+        }
+        
+        .template-elegant .education-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--dark-color);
+            margin-bottom: 6px;
+        }
+        
+        .template-elegant .education-info {
+            font-size: 0.8rem;
+            color: var(--gray-color);
+            line-height: 1.3;
+        }
+        
+        .template-elegant .education-info strong {
+            color: var(--dark-color);
+            font-weight: 600;
+        }
+        
+        /* Template Simple - Ultra Compact */
+        .template-simple {
+            font-family: 'Inter', sans-serif;
+            color: #000;
+            background: white;
+            padding: 20px;
+            position: relative;
+            line-height: 1.3;
+        }
+        
+        .template-simple .header-title {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        
+        .template-simple .header-title h1 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+        
+        .template-simple .header-title hr {
+            width: 80px;
+            height: 2px;
+            background: var(--secondary-color);
+            border: none;
+            margin: 8px auto 0;
+        }
+        
+        .template-simple .info-section {
+            margin-bottom: 15px;
+        }
+        
+        .template-simple .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+        }
+        
+        .template-simple .info-item {
+            display: flex;
+            align-items: center;
+            font-size: 0.8rem;
+        }
+        
+        .template-simple .info-label {
+            font-weight: 600;
+            color: var(--gray-color);
+            margin-right: 8px;
+            min-width: 80px;
+        }
+        
+        .template-simple .info-value {
+            color: var(--dark-color);
+            font-weight: 500;
+        }
+        
+        .template-simple .section-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin: 15px 0 10px 0;
+            text-align: center;
+            padding-bottom: 5px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .template-simple .education-section {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+        
+        .template-simple .education-item {
+            background: #f8f9fa;
+            padding: 8px;
+            border-radius: 6px;
+            border-left: 2px solid var(--secondary-color);
+        }
+        
+        .template-simple .education-level {
+            font-weight: 700;
+            font-size: 0.8rem;
+            color: var(--secondary-color);
+            margin-bottom: 3px;
+        }
+        
+        .template-simple .education-info {
+            font-size: 0.75rem;
+            color: var(--dark-color);
+            line-height: 1.3;
+        }
+        
+        .template-simple .education-info strong {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 992px) {
+            .sidebar {
+                position: relative;
+                top: 0;
+                margin-bottom: 25px;
+                max-height: none;
+            }
+            
+            .template-compact .info-grid,
+            .template-clean .education-grid,
+            .template-modern .education-cards,
+            .template-elegant .education-grid,
+            .template-simple .education-section {
+                grid-template-columns: 1fr;
+            }
+            
+            .template-modern .info-cards {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .template-compact,
+            .template-clean,
+            .template-modern,
+            .template-elegant,
+            .template-simple {
+                padding: 20px 15px;
+            }
+            
+            .template-modern .info-cards {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(255, 255, 255, 0.95);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            border-radius: 15px;
+        }
+        
+        .spinner-border {
+            width: 2.5rem;
+            height: 2.5rem;
+            border-color: var(--secondary-color);
+            border-right-color: transparent;
+        }
+        
+        .notification {
+            position: fixed;
+            top: 25px;
+            right: 25px;
+            padding: 18px 22px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            transform: translateX(120%);
+            transition: transform 0.3s ease;
+            border-left: 4px solid var(--accent-color);
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+        }
+        
+        .notification.success {
+            border-left-color: var(--accent-color);
+        }
+        
+        .notification.error {
+            border-left-color: #ef4444;
+        }
+        
+        .notification i {
+            margin-right: 12px;
+            font-size: 1.3rem;
+        }
+        
+        .notification.success i {
+            color: var(--accent-color);
+        }
+        
+        .notification.error i {
+            color: #ef4444;
+        }
+        
+        .notification div strong {
+            display: block;
+            margin-bottom: 3px;
+            font-weight: 600;
+        }
+        
+        /* Education Form Styles */
+        .education-form {
+            background: linear-gradient(135deg, var(--light-color), white);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border: 1px solid var(--border-color);
+        }
+        
+        .education-form h6 {
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-bottom: 12px;
+            font-size: 0.9rem;
+            letter-spacing: -0.3px;
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+        
+        .form-row .form-group {
+            flex: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <h1 class="mb-0"><i class="fas fa-file-alt me-3"></i>Generator Biodata Diri</h1>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p class="mb-0 opacity-75">Buat biodata diri ringkas dan profesional</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="container my-4">
+        <div class="row">
+            <div class="col-lg-5">
+                <div class="sidebar">
+                    <h4 class="mb-4"><i class="fas fa-user-edit me-2"></i>Data Diri</h4>
+                    
+                    <form id="biodataForm">
+                        <!-- Identitas Pribadi -->
+                        <div class="form-section">
+                            <h5><i class="fas fa-id-card me-2"></i>Identitas Pribadi</h5>
+                            
+                            <div class="mb-3">
+                                <label for="nama" class="form-label">Nama</label>
+                                <input type="text" class="form-control" id="nama" placeholder="Nama lengkap Anda">
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="nim" class="form-label">NIM</label>
+                                <input type="text" class="form-control" id="nim" placeholder="Nomor Induk Mahasiswa">
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="ttl" class="form-label">Tempat & Tanggal Lahir</label>
+                                <input type="text" class="form-control" id="ttl" placeholder="Contoh: Jakarta, 15 Januari 1998">
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="programStudi" class="form-label">Program Studi</label>
+                                <input type="text" class="form-control" id="programStudi" placeholder="Contoh: Teknik Informatika">
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="telepon" class="form-label">No. HP</label>
+                                <input type="text" class="form-control" id="telepon" placeholder="08xxxxxxxxxx">
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="email" placeholder="email@example.com">
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="alamat" class="form-label">Alamat</label>
+                                <textarea class="form-control" id="alamat" rows="2" placeholder="Alamat lengkap Anda"></textarea>
+                            </div>
+                        </div>
+                        
+                        <!-- Riwayat Pendidikan -->
+                        <div class="form-section">
+                            <h5><i class="fas fa-graduation-cap me-2"></i>Riwayat Pendidikan</h5>
+                            
+                            <div class="education-form">
+                                <h6>SD</h6>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="sdTahun" class="form-label">Tahun</label>
+                                        <input type="text" class="form-control" id="sdTahun" placeholder="2010-2016">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="sdInstansi" class="form-label">Instansi</label>
+                                        <input type="text" class="form-control" id="sdInstansi" placeholder="Nama SD">
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="sdAlamat" class="form-label">Alamat</label>
+                                        <input type="text" class="form-control" id="sdAlamat" placeholder="Alamat SD">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="sdJurusan" class="form-label">Jurusan</label>
+                                        <input type="text" class="form-control" id="sdJurusan" placeholder="Umum">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="education-form">
+                                <h6>SMP</h6>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="smpTahun" class="form-label">Tahun</label>
+                                        <input type="text" class="form-control" id="smpTahun" placeholder="2016-2019">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="smpInstansi" class="form-label">Instansi</label>
+                                        <input type="text" class="form-control" id="smpInstansi" placeholder="Nama SMP">
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="smpAlamat" class="form-label">Alamat</label>
+                                        <input type="text" class="form-control" id="smpAlamat" placeholder="Alamat SMP">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="smpJurusan" class="form-label">Jurusan</label>
+                                        <input type="text" class="form-control" id="smpJurusan" placeholder="Umum">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="education-form">
+                                <h6>SMA/SMK</h6>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="smaTahun" class="form-label">Tahun</label>
+                                        <input type="text" class="form-control" id="smaTahun" placeholder="2019-2022">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="smaInstansi" class="form-label">Instansi</label>
+                                        <input type="text" class="form-control" id="smaInstansi" placeholder="Nama SMA/SMK">
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="smaAlamat" class="form-label">Alamat</label>
+                                        <input type="text" class="form-control" id="smaAlamat" placeholder="Alamat SMA/SMK">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="smaJurusan" class="form-label">Jurusan</label>
+                                        <input type="text" class="form-control" id="smaJurusan" placeholder="IPA/IPS/TKJ/etc">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="education-form">
+                                <h6>Perguruan Tinggi</h6>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="kuliahTahun" class="form-label">Tahun</label>
+                                        <input type="text" class="form-control" id="kuliahTahun" placeholder="2022-Sekarang">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="kuliahInstansi" class="form-label">Instansi</label>
+                                        <input type="text" class="form-control" id="kuliahInstansi" placeholder="Nama Universitas">
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="kuliahAlamat" class="form-label">Alamat</label>
+                                        <input type="text" class="form-control" id="kuliahAlamat" placeholder="Alamat Universitas">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="kuliahJurusan" class="form-label">Jurusan</label>
+                                        <input type="text" class="form-control" id="kuliahJurusan" placeholder="Teknik Informatika/etc">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <button type="button" class="btn btn-generate" id="generateBtn">
+                            <i class="fas fa-sync-alt me-2"></i>Generate Biodata
+                        </button>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="col-lg-7">
+                <div class="preview-container">
+                    <h4 class="mb-3"><i class="fas fa-eye me-2"></i>Preview Biodata</h4>
+                    
+                    <div class="template-selector mb-3">
+                        <div class="template-option active" data-template="compact">
+                            <img src="https://picsum.photos/seed/compact/100/130.jpg" alt="Compact Template">
+                            <div class="template-name">Compact</div>
+                        </div>
+                        <div class="template-option" data-template="clean">
+                            <img src="https://picsum.photos/seed/clean/100/130.jpg" alt="Clean Template">
+                            <div class="template-name">Clean</div>
+                        </div>
+                        <div class="template-option" data-template="modern">
+                            <img src="https://picsum.photos/seed/modern/100/130.jpg" alt="Modern Template">
+                            <div class="template-name">Modern</div>
+                        </div>
+                        <div class="template-option" data-template="elegant">
+                            <img src="https://picsum.photos/seed/elegant/100/130.jpg" alt="Elegant Template">
+                            <div class="template-name">Elegant</div>
+                        </div>
+                        <div class="template-option" data-template="simple">
+                            <img src="https://picsum.photos/seed/simple/100/130.jpg" alt="Simple Template">
+                            <div class="template-name">Simple</div>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex mb-3">
+                        <button class="btn btn-success" id="downloadPNG">
+                            <i class="fas fa-download me-2"></i>Download PNG
+                        </button>
+                        <button class="btn btn-primary btn-download" id="downloadJPG">
+                            <i class="fas fa-download me-2"></i>Download JPG
+                        </button>
+                        <button class="btn btn-danger btn-download" id="downloadPDF">
+                            <i class="fas fa-file-pdf me-2"></i>Download PDF
+                        </button>
+                    </div>
+                    
+                    <div class="biodata-preview" id="biodataPreview">
+                        <!-- Biodata Preview akan dimuat di sini -->
+                        <div class="template-compact" id="biodataContent">
+                            <div class="header-title">
+                                <h1>Biodata Diri</h1>
+                            </div>
+                            
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <span class="info-label">Nama:</span>
+                                    <span class="info-value" id="namaPreview">Nama Lengkap</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">NIM:</span>
+                                    <span class="info-value" id="nimPreview">1234567890</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">TTL:</span>
+                                    <span class="info-value" id="ttlPreview">Jakarta, 1 Januari 1998</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Program Studi:</span>
+                                    <span class="info-value" id="programStudiPreview">Teknik Informatika</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">No. HP:</span>
+                                    <span class="info-value" id="teleponPreview">+62 812-3456-7890</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Email:</span>
+                                    <span class="info-value" id="emailPreview">email@example.com</span>
+                                </div>
+                                <div class="info-item" style="grid-column: span 2;">
+                                    <span class="info-label">Alamat:</span>
+                                    <span class="info-value" id="alamatPreview">Jl. Contoh No. 123, Jakarta</span>
+                                </div>
+                            </div>
+                            
+                            <div class="section-title">Riwayat Pendidikan</div>
+                            
+                            <div class="education-grid">
+                                <div class="education-item">
+                                    <div class="education-title">SD</div>
+                                    <div class="education-details">
+                                        <strong>Instansi:</strong> <span id="sdInstansiPreview">SD Negeri 1 Jakarta</span><br>
+                                        <strong>Tahun:</strong> <span id="sdTahunPreview">2010-2016</span><br>
+                                        <strong>Alamat:</strong> <span id="sdAlamatPreview">Jl. Contoh No. 123, Jakarta</span><br>
+                                        <strong>Jurusan:</strong> <span id="sdJurusanPreview">Umum</span>
+                                    </div>
+                                </div>
+                                <div class="education-item">
+                                    <div class="education-title">SMP</div>
+                                    <div class="education-details">
+                                        <strong>Instansi:</strong> <span id="smpInstansiPreview">SMP Negeri 1 Jakarta</span><br>
+                                        <strong>Tahun:</strong> <span id="smpTahunPreview">2016-2019</span><br>
+                                        <strong>Alamat:</strong> <span id="smpAlamatPreview">Jl. Contoh No. 123, Jakarta</span><br>
+                                        <strong>Jurusan:</strong> <span id="smpJurusanPreview">Umum</span>
+                                    </div>
+                                </div>
+                                <div class="education-item">
+                                    <div class="education-title">SMA/SMK</div>
+                                    <div class="education-details">
+                                        <strong>Instansi:</strong> <span id="smaInstansiPreview">SMA Negeri 1 Jakarta</span><br>
+                                        <strong>Tahun:</strong> <span id="smaTahunPreview">2019-2022</span><br>
+                                        <strong>Alamat:</strong> <span id="smaAlamatPreview">Jl. Contoh No. 123, Jakarta</span><br>
+                                        <strong>Jurusan:</strong> <span id="smaJurusanPreview">IPA</span>
+                                    </div>
+                                </div>
+                                <div class="education-item">
+                                    <div class="education-title">Perguruan Tinggi</div>
+                                    <div class="education-details">
+                                        <strong>Instansi:</strong> <span id="kuliahInstansiPreview">Universitas Indonesia</span><br>
+                                        <strong>Tahun:</strong> <span id="kuliahTahunPreview">2022-Sekarang</span><br>
+                                        <strong>Alamat:</strong> <span id="kuliahAlamatPreview">Jl. Contoh No. 123, Jakarta</span><br>
+                                        <strong>Jurusan:</strong> <span id="kuliahJurusanPreview">Teknik Informatika</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="loading-overlay d-none" id="loadingOverlay">
+                        <div class="spinner-border" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="notification" id="notification">
+        <i class="fas fa-check-circle"></i>
+        <div>
+            <strong id="notificationTitle">Success!</strong>
+            <p class="mb-0" id="notificationMessage">Biodata berhasil diunduh.</p>
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- html2canvas untuk generate gambar -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <!-- jsPDF untuk generate PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('biodataForm');
+            const generateBtn = document.getElementById('generateBtn');
+            const downloadPNG = document.getElementById('downloadPNG');
+            const downloadJPG = document.getElementById('downloadJPG');
+            const downloadPDF = document.getElementById('downloadPDF');
+            const biodataContent = document.getElementById('biodataContent');
+            const biodataPreview = document.getElementById('biodataPreview');
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            const notification = document.getElementById('notification');
+            const notificationTitle = document.getElementById('notificationTitle');
+            const notificationMessage = document.getElementById('notificationMessage');
+            
+            // Template selector
+            const templateOptions = document.querySelectorAll('.template-option');
+            let currentTemplate = 'compact';
+            
+            templateOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    templateOptions.forEach(opt => opt.classList.remove('active'));
+                    this.classList.add('active');
+                    currentTemplate = this.dataset.template;
+                    updateTemplate(currentTemplate);
+                });
+            });
+            
+            // Update template based on selection
+            function updateTemplate(template) {
+                biodataContent.className = `template-${template}`;
+                // Re-generate biodata with new template
+                generateBiodata();
+            }
+            
+            // Generate Biodata function
+            function generateBiodata() {
+                // Get form values
+                const nama = document.getElementById('nama').value || 'Nama Lengkap';
+                const nim = document.getElementById('nim').value || '1234567890';
+                const ttl = document.getElementById('ttl').value || 'Jakarta, 1 Januari 1998';
+                const programStudi = document.getElementById('programStudi').value || 'Teknik Informatika';
+                const telepon = document.getElementById('telepon').value || '+62 812-3456-7890';
+                const email = document.getElementById('email').value || 'email@example.com';
+                const alamat = document.getElementById('alamat').value || 'Jl. Contoh No. 123, Jakarta';
+                
+                // SD data
+                const sdTahun = document.getElementById('sdTahun').value || '2010-2016';
+                const sdInstansi = document.getElementById('sdInstansi').value || 'SD Negeri 1 Jakarta';
+                const sdAlamat = document.getElementById('sdAlamat').value || 'Jl. Contoh No. 123, Jakarta';
+                const sdJurusan = document.getElementById('sdJurusan').value || 'Umum';
+                
+                // SMP data
+                const smpTahun = document.getElementById('smpTahun').value || '2016-2019';
+                const smpInstansi = document.getElementById('smpInstansi').value || 'SMP Negeri 1 Jakarta';
+                const smpAlamat = document.getElementById('smpAlamat').value || 'Jl. Contoh No. 123, Jakarta';
+                const smpJurusan = document.getElementById('smpJurusan').value || 'Umum';
+                
+                // SMA data
+                const smaTahun = document.getElementById('smaTahun').value || '2019-2022';
+                const smaInstansi = document.getElementById('smaInstansi').value || 'SMA Negeri 1 Jakarta';
+                const smaAlamat = document.getElementById('smaAlamat').value || 'Jl. Contoh No. 123, Jakarta';
+                const smaJurusan = document.getElementById('smaJurusan').value || 'IPA';
+                
+                // Kuliah data
+                const kuliahTahun = document.getElementById('kuliahTahun').value || '2022-Sekarang';
+                const kuliahInstansi = document.getElementById('kuliahInstansi').value || 'Universitas Indonesia';
+                const kuliahAlamat = document.getElementById('kuliahAlamat').value || 'Jl. Contoh No. 123, Jakarta';
+                const kuliahJurusan = document.getElementById('kuliahJurusan').value || 'Teknik Informatika';
+                
+                // Create template HTML based on selected template
+                let templateHTML = '';
+                
+                if (currentTemplate === 'compact') {
+                    templateHTML = `
+                        <div class="template-compact" id="biodataContent">
+                            <div class="header-title">
+                                <h1>Biodata Diri</h1>
+                            </div>
+                            
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <span class="info-label">Nama:</span>
+                                    <span class="info-value">${nama}</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">NIM:</span>
+                                    <span class="info-value">${nim}</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">TTL:</span>
+                                    <span class="info-value">${ttl}</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Program Studi:</span>
+                                    <span class="info-value">${programStudi}</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">No. HP:</span>
+                                    <span class="info-value">${telepon}</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Email:</span>
+                                    <span class="info-value">${email}</span>
+                                </div>
+                                <div class="info-item" style="grid-column: span 2;">
+                                    <span class="info-label">Alamat:</span>
+                                    <span class="info-value">${alamat}</span>
+                                </div>
+                            </div>
+                            
+                            <div class="section-title">Riwayat Pendidikan</div>
+                            
+                            <div class="education-grid">
+                                <div class="education-item">
+                                    <div class="education-title">SD</div>
+                                    <div class="education-details">
+                                        <strong>Instansi:</strong> ${sdInstansi}<br>
+                                        <strong>Tahun:</strong> ${sdTahun}<br>
+                                        <strong>Alamat:</strong> ${sdAlamat}<br>
+                                        <strong>Jurusan:</strong> ${sdJurusan}
+                                    </div>
+                                </div>
+                                <div class="education-item">
+                                    <div class="education-title">SMP</div>
+                                    <div class="education-details">
+                                        <strong>Instansi:</strong> ${smpInstansi}<br>
+                                        <strong>Tahun:</strong> ${smpTahun}<br>
+                                        <strong>Alamat:</strong> ${smpAlamat}<br>
+                                        <strong>Jurusan:</strong> ${smpJurusan}
+                                    </div>
+                                </div>
+                                <div class="education-item">
+                                    <div class="education-title">SMA/SMK</div>
+                                    <div class="education-details">
+                                        <strong>Instansi:</strong> ${smaInstansi}<br>
+                                        <strong>Tahun:</strong> ${smaTahun}<br>
+                                        <strong>Alamat:</strong> ${smaAlamat}<br>
+                                        <strong>Jurusan:</strong> ${smaJurusan}
+                                    </div>
+                                </div>
+                                <div class="education-item">
+                                    <div class="education-title">Perguruan Tinggi</div>
+                                    <div class="education-details">
+                                        <strong>Instansi:</strong> ${kuliahInstansi}<br>
+                                        <strong>Tahun:</strong> ${kuliahTahun}<br>
+                                        <strong>Alamat:</strong> ${kuliahAlamat}<br>
+                                        <strong>Jurusan:</strong> ${kuliahJurusan}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                } else if (currentTemplate === 'clean') {
+                    templateHTML = `
+                        <div class="template-clean" id="biodataContent">
+                            <div class="header-title">
+                                <h1>Biodata Diri</h1>
+                            </div>
+                            
+                            <div class="info-section">
+                                <div class="info-row">
+                                    <div class="info-label">Nama</div>
+                                    <div class="info-value">${nama}</div>
+                                </div>
+                                <div class="info-row">
+                                    <div class="info-label">NIM</div>
+                                    <div class="info-value">${nim}</div>
+                                </div>
+                                <div class="info-row">
+                                    <div class="info-label">Tempat, Tanggal Lahir</div>
+                                    <div class="info-value">${ttl}</div>
+                                </div>
+                                <div class="info-row">
+                                    <div class="info-label">Program Studi</div>
+                                    <div class="info-value">${programStudi}</div>
+                                </div>
+                                <div class="info-row">
+                                    <div class="info-label">No. HP</div>
+                                    <div class="info-value">${telepon}</div>
+                                </div>
+                                <div class="info-row">
+                                    <div class="info-label">Email</div>
+                                    <div class="info-value">${email}</div>
+                                </div>
+                                <div class="info-row">
+                                    <div class="info-label">Alamat</div>
+                                    <div class="info-value">${alamat}</div>
+                                </div>
+                            </div>
+                            
+                            <div class="section-title">Riwayat Pendidikan</div>
+                            
+                            <div class="education-grid">
+                                <div class="education-item">
+                                    <div class="education-name">SD</div>
+                                    <div class="education-info">
+                                        <strong>Instansi:</strong> ${sdInstansi}<br>
+                                        <strong>Tahun:</strong> ${sdTahun}<br>
+                                        <strong>Alamat:</strong> ${sdAlamat}<br>
+                                        <strong>Jurusan:</strong> ${sdJurusan}
+                                    </div>
+                                </div>
+                                <div class="education-item">
+                                    <div class="education-name">SMP</div>
+                                    <div class="education-info">
+                                        <strong>Instansi:</strong> ${smpInstansi}<br>
+                                        <strong>Tahun:</strong> ${smpTahun}<br>
+                                        <strong>Alamat:</strong> ${smpAlamat}<br>
+                                        <strong>Jurusan:</strong> ${smpJurusan}
+                                    </div>
+                                </div>
+                                <div class="education-item">
+                                    <div class="education-name">SMA/SMK</div>
+                                    <div class="education-info">
+                                        <strong>Instansi:</strong> ${smaInstansi}<br>
+                                        <strong>Tahun:</strong> ${smaTahun}<br>
+                                        <strong>Alamat:</strong> ${smaAlamat}<br>
+                                        <strong>Jurusan:</strong> ${smaJurusan}
+                                    </div>
+                                </div>
+                                <div class="education-item">
+                                    <div class="education-name">Perguruan Tinggi</div>
+                                    <div class="education-info">
+                                        <strong>Instansi:</strong> ${kuliahInstansi}<br>
+                                        <strong>Tahun:</strong> ${kuliahTahun}<br>
+                                        <strong>Alamat:</strong> ${kuliahAlamat}<br>
+                                        <strong>Jurusan:</strong> ${kuliahJurusan}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                } else if (currentTemplate === 'modern') {
+                    templateHTML = `
+                        <div class="template-modern" id="biodataContent">
+                            <div class="header-title">
+                                <h1>Biodata Diri</h1>
+                            </div>
+                            
+                            <div class="info-cards">
+                                <div class="info-card">
+                                    <div class="card-label">Nama</div>
+                                    <div class="card-value">${nama}</div>
+                                </div>
+                                <div class="info-card">
+                                    <div class="card-label">NIM</div>
+                                    <div class="card-value">${nim}</div>
+                                </div>
+                                <div class="info-card">
+                                    <div class="card-label">TTL</div>
+                                    <div class="card-value">${ttl}</div>
+                                </div>
+                                <div class="info-card">
+                                    <div class="card-label">Program Studi</div>
+                                    <div class="card-value">${programStudi}</div>
+                                </div>
+                                <div class="info-card">
+                                    <div class="card-label">No. HP</div>
+                                    <div class="card-value">${telepon}</div>
+                                </div>
+                                <div class="info-card">
+                                    <div class="card-label">Email</div>
+                                    <div class="card-value">${email}</div>
+                                </div>
+                                <div class="info-card" style="grid-column: span 3;">
+                                    <div class="card-label">Alamat</div>
+                                    <div class="card-value">${alamat}</div>
+                                </div>
+                            </div>
+                            
+                            <div class="section-title">Riwayat Pendidikan</div>
+                            
+                            <div class="education-cards">
+                                <div class="education-card">
+                                    <div class="education-level">SD</div>
+                                    <div class="education-name">${sdInstansi}</div>
+                                    <div class="education-details">
+                                        <strong>Tahun:</strong> ${sdTahun}<br>
+                                        <strong>Alamat:</strong> ${sdAlamat}<br>
+                                        <strong>Jurusan:</strong> ${sdJurusan}
+                                    </div>
+                                </div>
+                                <div class="education-card">
+                                    <div class="education-level">SMP</div>
+                                    <div class="education-name">${smpInstansi}</div>
+                                    <div class="education-details">
+                                        <strong>Tahun:</strong> ${smpTahun}<br>
+                                        <strong>Alamat:</strong> ${smpAlamat}<br>
+                                        <strong>Jurusan:</strong> ${smpJurusan}
+                                    </div>
+                                </div>
+                                <div class="education-card">
+                                    <div class="education-level">SMA/SMK</div>
+                                    <div class="education-name">${smaInstansi}</div>
+                                    <div class="education-details">
+                                        <strong>Tahun:</strong> ${smaTahun}<br>
+                                        <strong>Alamat:</strong> ${smaAlamat}<br>
+                                        <strong>Jurusan:</strong> ${smaJurusan}
+                                    </div>
+                                </div>
+                                <div class="education-card">
+                                    <div class="education-level">Perguruan Tinggi</div>
+                                    <div class="education-name">${kuliahInstansi}</div>
+                                    <div class="education-details">
+                                        <strong>Tahun:</strong> ${kuliahTahun}<br>
+                                        <strong>Alamat:</strong> ${kuliahAlamat}<br>
+                                        <strong>Jurusan:</strong> ${kuliahJurusan}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                } else if (currentTemplate === 'elegant') {
+                    templateHTML = `
+                        <div class="template-elegant" id="biodataContent">
+                            <div class="header-title">
+                                <h1>Biodata Diri</h1>
+                                <div class="header-subtitle">Data Pribadi & Riwayat Pendidikan</div>
+                            </div>
+                            
+                            <table class="info-table">
+                                <tr>
+                                    <td>Nama</td>
+                                    <td>${nama}</td>
+                                </tr>
+                                <tr>
+                                    <td>NIM</td>
+                                    <td>${nim}</td>
+                                </tr>
+                                <tr>
+                                    <td>Tempat, Tanggal Lahir</td>
+                                    <td>${ttl}</td>
+                                </tr>
+                                <tr>
+                                    <td>Program Studi</td>
+                                    <td>${programStudi}</td>
+                                </tr>
+                                <tr>
+                                    <td>No. HP</td>
+                                    <td>${telepon}</td>
+                                </tr>
+                                <tr>
+                                    <td>Email</td>
+                                    <td>${email}</td>
+                                </tr>
+                                <tr>
+                                    <td>Alamat</td>
+                                    <td>${alamat}</td>
+                                </tr>
+                            </table>
+                            
+                            <div class="section-title">Riwayat Pendidikan</div>
+                            
+                            <div class="education-grid">
+                                <div class="education-box">
+                                    <div class="education-header">
+                                        <div class="education-level">SD</div>
+                                        <div class="education-year">${sdTahun}</div>
+                                    </div>
+                                    <div class="education-name">${sdInstansi}</div>
+                                    <div class="education-info">
+                                        <strong>Alamat:</strong> ${sdAlamat}<br>
+                                        <strong>Jurusan:</strong> ${sdJurusan}
+                                    </div>
+                                </div>
+                                <div class="education-box">
+                                    <div class="education-header">
+                                        <div class="education-level">SMP</div>
+                                        <div class="education-year">${smpTahun}</div>
+                                    </div>
+                                    <div class="education-name">${smpInstansi}</div>
+                                    <div class="education-info">
+                                        <strong>Alamat:</strong> ${smpAlamat}<br>
+                                        <strong>Jurusan:</strong> ${smpJurusan}
+                                    </div>
+                                </div>
+                                <div class="education-box">
+                                    <div class="education-header">
+                                        <div class="education-level">SMA/SMK</div>
+                                        <div class="education-year">${smaTahun}</div>
+                                    </div>
+                                    <div class="education-name">${smaInstansi}</div>
+                                    <div class="education-info">
+                                        <strong>Alamat:</strong> ${smaAlamat}<br>
+                                        <strong>Jurusan:</strong> ${smaJurusan}
+                                    </div>
+                                </div>
+                                <div class="education-box">
+                                    <div class="education-header">
+                                        <div class="education-level">Perguruan Tinggi</div>
+                                        <div class="education-year">${kuliahTahun}</div>
+                                    </div>
+                                    <div class="education-name">${kuliahInstansi}</div>
+                                    <div class="education-info">
+                                        <strong>Alamat:</strong> ${kuliahAlamat}<br>
+                                        <strong>Jurusan:</strong> ${kuliahJurusan}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                } else if (currentTemplate === 'simple') {
+                    templateHTML = `
+                        <div class="template-simple" id="biodataContent">
+                            <div class="header-title">
+                                <h1>Biodata Diri</h1>
+                                <hr>
+                            </div>
+                            
+                            <div class="info-section">
+                                <div class="info-grid">
+                                    <div class="info-item">
+                                        <span class="info-label">Nama:</span>
+                                        <span class="info-value">${nama}</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="info-label">NIM:</span>
+                                        <span class="info-value">${nim}</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="info-label">TTL:</span>
+                                        <span class="info-value">${ttl}</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="info-label">Program Studi:</span>
+                                        <span class="info-value">${programStudi}</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="info-label">No. HP:</span>
+                                        <span class="info-value">${telepon}</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="info-label">Email:</span>
+                                        <span class="info-value">${email}</span>
+                                    </div>
+                                    <div class="info-item" style="grid-column: span 2;">
+                                        <span class="info-label">Alamat:</span>
+                                        <span class="info-value">${alamat}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="section-title">Riwayat Pendidikan</div>
+                            
+                            <div class="education-section">
+                                <div class="education-item">
+                                    <div class="education-level">SD</div>
+                                    <div class="education-info">
+                                        <strong>Instansi:</strong> ${sdInstansi}<br>
+                                        <strong>Tahun:</strong> ${sdTahun}<br>
+                                        <strong>Alamat:</strong> ${sdAlamat}<br>
+                                        <strong>Jurusan:</strong> ${sdJurusan}
+                                    </div>
+                                </div>
+                                <div class="education-item">
+                                    <div class="education-level">SMP</div>
+                                    <div class="education-info">
+                                        <strong>Instansi:</strong> ${smpInstansi}<br>
+                                        <strong>Tahun:</strong> ${smpTahun}<br>
+                                        <strong>Alamat:</strong> ${smpAlamat}<br>
+                                        <strong>Jurusan:</strong> ${smpJurusan}
+                                    </div>
+                                </div>
+                                <div class="education-item">
+                                    <div class="education-level">SMA/SMK</div>
+                                    <div class="education-info">
+                                        <strong>Instansi:</strong> ${smaInstansi}<br>
+                                        <strong>Tahun:</strong> ${smaTahun}<br>
+                                        <strong>Alamat:</strong> ${smaAlamat}<br>
+                                        <strong>Jurusan:</strong> ${smaJurusan}
+                                    </div>
+                                </div>
+                                <div class="education-item">
+                                    <div class="education-level">Perguruan Tinggi</div>
+                                    <div class="education-info">
+                                        <strong>Instansi:</strong> ${kuliahInstansi}<br>
+                                        <strong>Tahun:</strong> ${kuliahTahun}<br>
+                                        <strong>Alamat:</strong> ${kuliahAlamat}<br>
+                                        <strong>Jurusan:</strong> ${kuliahJurusan}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                biodataPreview.innerHTML = templateHTML;
+            }
+            
+            // Show notification
+            function showNotification(title, message, isSuccess = true) {
+                notificationTitle.textContent = title;
+                notificationMessage.textContent = message;
+                
+                notification.classList.remove('success', 'error');
+                notification.classList.add(isSuccess ? 'success' : 'error');
+                
+                const icon = notification.querySelector('i');
+                icon.className = isSuccess ? 'fas fa-check-circle' : 'fas fa-exclamation-circle';
+                
+                notification.classList.add('show');
+                
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                }, 3000);
+            }
+            
+            // Show loading overlay
+            function showLoading() {
+                loadingOverlay.classList.remove('d-none');
+            }
+            
+            // Hide loading overlay
+            function hideLoading() {
+                loadingOverlay.classList.add('d-none');
+            }
+            
+            // Generate Biodata button click
+            generateBtn.addEventListener('click', function() {
+                generateBiodata();
+                showNotification('Success!', 'Biodata berhasil digenerate.');
+            });
+            
+            // Download PNG button click
+            downloadPNG.addEventListener('click', function() {
+                showLoading();
+                
+                html2canvas(biodataPreview, {
+                    scale: 2,
+                    useCORS: true,
+                    logging: false,
+                    backgroundColor: '#ffffff'
+                }).then(canvas => {
+                    const link = document.createElement('a');
+                    link.download = `Biodata_${document.getElementById('nama').value || 'User'}.png`;
+                    link.href = canvas.toDataURL('image/png');
+                    link.click();
+                    
+                    hideLoading();
+                    showNotification('Success!', 'Biodata berhasil diunduh dalam format PNG.');
+                }).catch(error => {
+                    console.error('Error generating PNG:', error);
+                    hideLoading();
+                    showNotification('Error!', 'Gagal mengunduh biodata dalam format PNG.', false);
+                });
+            });
+            
+            // Download JPG button click
+            downloadJPG.addEventListener('click', function() {
+                showLoading();
+                
+                html2canvas(biodataPreview, {
+                    scale: 2,
+                    useCORS: true,
+                    logging: false,
+                    backgroundColor: '#ffffff'
+                }).then(canvas => {
+                    const link = document.createElement('a');
+                    link.download = `Biodata_${document.getElementById('nama').value || 'User'}.jpg`;
+                    link.href = canvas.toDataURL('image/jpeg', 0.95);
+                    link.click();
+                    
+                    hideLoading();
+                    showNotification('Success!', 'Biodata berhasil diunduh dalam format JPG.');
+                }).catch(error => {
+                    console.error('Error generating JPG:', error);
+                    hideLoading();
+                    showNotification('Error!', 'Gagal mengunduh biodata dalam format JPG.', false);
+                });
+            });
+            
+            // Download PDF button click
+            downloadPDF.addEventListener('click', function() {
+                showLoading();
+                
+                html2canvas(biodataPreview, {
+                    scale: 2,
+                    useCORS: true,
+                    logging: false
+                }).then(canvas => {
+                    const imgData = canvas.toDataURL('image/png');
+                    const pdf = new jspdf.jsPDF({
+                        orientation: 'portrait',
+                        unit: 'mm',
+                        format: 'a4'
+                    });
+                    
+                    const imgWidth = 210; // A4 width in mm
+                    const pageHeight = 297; // A4 height in mm
+                    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+                    let heightLeft = imgHeight;
+                    let position = 0;
+                    
+                    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                    heightLeft -= pageHeight;
+                    
+                    while (heightLeft >= 0) {
+                        position = heightLeft - imgHeight;
+                        pdf.addPage();
+                        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                        heightLeft -= pageHeight;
+                    }
+                    
+                    pdf.save(`Biodata_${document.getElementById('nama').value || 'User'}.pdf`);
+                    
+                    hideLoading();
+                    showNotification('Success!', 'Biodata berhasil diunduh dalam format PDF.');
+                }).catch(error => {
+                    console.error('Error generating PDF:', error);
+                    hideLoading();
+                    showNotification('Error!', 'Gagal mengunduh biodata dalam format PDF.', false);
+                });
+            });
+            
+            // Initialize with default values
+            generateBiodata();
+        });
+    </script>
+</body>
+</html>
